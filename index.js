@@ -1,19 +1,33 @@
 const holes = document.querySelectorAll('.hole');
 const moles = document.querySelectorAll('.mole');
 const startButton = document.querySelector('#start');
-const score = document.querySelector('#score');
-const timerDisplay = document.querySelector('#timer');
-const bestScore = document.querySelector('#best');
+// TODO: Add the missing query selectors:
+const score = document.querySelector('#score'); // Use querySelector() to get the score element
+const timerDisplay = document.querySelector('#timer'); // use querySelector() to get the timer element.
+const audioHit = new Audio('.\assets\hit.mp3');
+const song = new Audio('\assets\molesong.mp3');
 
-const audioHit = new Audio("https://github.com/Thinkful-Ed/js-dev-final-capstone-starter/blob/main/assets/hit.mp3?raw=true")
-const song = new Audio("https://github.com/Thinkful-Ed/js-dev-final-capstone-starter/blob/main/assets/molesong.mp3?raw=true");
-const mallet = document.querySelector('#mallet');
+function playAudio(audioObject) {
+  audioObject.play();
+}
+
+function loopAudio(audioObject) {
+  audioObject.loop = true;
+  playAudio(audioObject);
+}
+
+function stopAudio(audioObject) {
+  audioObject.pause();
+}
+
+function play(){
+  playAudio(song);
+}
 
 let time = 0;
-let timer;
+let timer = 10;
 let lastHole = 0;
 let points = 0;
-let bestPoints = bestScore.textContent;
 let difficulty = "hard";
 
 /**
@@ -45,18 +59,10 @@ function randomInteger(min, max) {
  *
  */
 function setDelay(difficulty) {
-  switch (difficulty) {
-    case 'easy':
-      return 1500;
-      break;
-    case 'normal' :
-      return 1000;
-      break;
-    case 'hard':
-      return randomInteger(600, 1200);
-      break;
-  }
-
+  // TODO: Write your code here.
+  if (difficulty === 'easy') { return 1500 }
+  if (difficulty === 'normal') { return 1000 }
+  if (difficulty === 'hard') { return randomInteger (600, 1200) }
 }
 
 /**
@@ -74,13 +80,17 @@ function setDelay(difficulty) {
  * chooseHole(holes) //> returns one of the 9 holes that you defined
  */
 function chooseHole(holes) {
-  const holeNumber = randomInteger(0, 8);
-  let hole = holes[holeNumber];
-  while (hole === lastHole) {
-    hole = holes[randomInteger(0, 8)];
-  }
+  // TODO: Write your code here.
+const index = randomInteger(0, 8);
+  const hole = holes[index];
+    if (hole === lastHole) {
+
+      return chooseHole(holes);
+    }
+    else {
   lastHole = hole;
   return hole;
+}
 }
 
 /**
@@ -104,11 +114,13 @@ function chooseHole(holes) {
 *
 */
 function gameOver() {
+  // TODO: Write your code here
   if (time > 0) {
-    let timeoutId = showUp();
-    return timeoutId;
-  } else {
-    let gameStopped = stopGame();
+    timeoutId = showUp();
+    return timeoutId; 
+} 
+   else {
+      gameStopped = stopGame();
     return gameStopped;
   }
 }
@@ -123,8 +135,8 @@ function gameOver() {
 *
 */
 function showUp() {
-  let delay = setDelay(difficulty);
-  const hole = chooseHole(holes);
+  let delay = setDelay(difficulty); // TODO: Update so that it uses setDelay()
+  const hole = chooseHole(holes);  // TODO: Update so that it use chooseHole()
   return showAndHide(hole, delay);
 }
 
@@ -136,24 +148,31 @@ function showUp() {
 * the timeoutID
 *
 */
-function showAndHide(hole, delay){
+function showAndHide(hole, delay) {
+  // TODO: call the toggleVisibility function so that it adds the 'show' class.
   toggleVisibility(hole);
   const timeoutID = setTimeout(() => {
-    toggleVisibility(hole);
+    // TODO: call the toggleVisibility function so that it removes the 'show' class when the timer times out.
+  toggleVisibility(hole);
     gameOver();
-  }, delay);
+  }, delay); // TODO: change the setTimeout delay to the one provided as a parameter
   return timeoutID;
 }
 
+//I added this per the instructions to add delay but it functions without, so I'm saving it to make sure the test passes
+//function toggleVisibility(hole){
+  //delay.classList.toggle("show");
+  //return delay;
+//}
 /**
 *
 * Adds or removes the 'show' class that is defined in styles.css to 
 * a given hole. It returns the hole.
 *
 */
-function toggleVisibility(hole){
+function toggleVisibility(hole) {
+  // TODO: add hole.classList.toggle so that it adds or removes the 'show' class.
   hole.classList.toggle('show');
-
   return hole;
 }
 
@@ -168,10 +187,9 @@ function toggleVisibility(hole){
 *
 */
 function updateScore() {
+  // TODO: Write your code here
   points++;
   score.textContent = points;
-  updateBestScore();
-
   return points;
 }
 
@@ -183,22 +201,12 @@ function updateScore() {
 *
 */
 function clearScore() {
-  points = 0;
-  score.textContent = points;
+  // TODO: Write your code here
+  // points = 0;
+    points = 0;
+  // score.textContent = points;
+    score.textContent = points;
   return points;
-}
-
-/**
-*
-* This function update the Best score of day. It gets updated when the current
-* score is higher than the previous best score.
-*
-*/
-function updateBestScore() {
-  if (points > bestPoints) {
-    bestScore.textContent = points;
-    bestPoints = points;
-  }
 }
 
 /**
@@ -207,13 +215,14 @@ function updateBestScore() {
 *
 */
 function updateTimer() {
+  // TODO: Write your code here.
+  // hint: this code is provided to you in the instructions.
   if (time > 0) {
     time -= 1;
     timerDisplay.textContent = time;
   }
-
   return time;
-}
+ }
 
 /**
 *
@@ -222,9 +231,12 @@ function updateTimer() {
 *
 */
 function startTimer() {
+  // TODO: Write your code here
   timer = setInterval(updateTimer, 1000);
   return timer;
 }
+
+//startTimer();
 
 /**
 *
@@ -235,22 +247,26 @@ function startTimer() {
 *
 */
 function whack(event) {
-  updateScore();
+  // TODO: Write your code here.
+  // call updateScore()
+   updateScore();
   return points;
-}
+ }
 
 /**
 *
 * Adds the 'click' event listeners to the moles. See the instructions
 * for an example on how to set event listeners using a for loop.
 */
-function setEventListeners(){
-  moles.forEach(mole => {
-    mole.addEventListener("click", whack);
-    mole.addEventListener("click", playHit);
-  });
+function setEventListeners() {
+  // TODO: Write your code here
+  moles.forEach(
+       mole => mole.addEventListener('click', whack)
+  );
   return moles;
 }
+
+setEventListeners();
 
 /**
 *
@@ -265,48 +281,12 @@ function setDuration(duration) {
 
 /**
 *
-* This function playes a background music while user is playiong the game.
-*
-*/
-function playAudio(audioObject) {
-  audioObject.play();
-}
-
-/**
-*
-* This function pauses the background music.
-*
-*/
-function stopAudio(audioObject) {
-  audioObject.pause();
-}
-
-/**
-*
-* This function calls playAudio function to play music.
-*
-*/
-function play() {
-  playAudio(song);
-}
-
-/**
-*
-* This function makes a hit sound.
-*
-*/
-function playHit() {
-  playAudio(audioHit);
-}
-
-/**
-*
 * This function is called when the game is stopped. It clears the
 * timer using clearInterval. Returns "game stopped".
 *
 */
-function stopGame(){
-  stopAudio(song);
+function stopGame() {
+  stopAudio(song);  //optional
   clearInterval(timer);
   return "game stopped";
 }
@@ -317,18 +297,16 @@ function stopGame(){
 * is clicked.
 *
 */
-function startGame(){
-  clearScore();
-  play();
-  setEventListeners();
-  setDuration(15);
-  startTimer();
+function startGame() {
+  setDuration(timer);
   showUp();
+  startTimer();
+  clearScore();
+  setEventListeners();
   return "game started";
 }
 
 startButton.addEventListener("click", startGame);
-
 
 // Please do not modify the code below.
 // Used for testing purposes.
